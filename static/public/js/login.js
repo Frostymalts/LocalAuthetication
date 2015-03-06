@@ -8,8 +8,8 @@ $("#form").submit(function () {
 	$.ajax({
 		url: '/api/login',
 		type: 'post',
-		//dataType: 'json',
         data: JSON.stringify(credentials),
+        contentType: 'application/json',
 		success: function() {
 			window.location.href = "/";
 		},

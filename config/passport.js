@@ -38,13 +38,13 @@ module.exports = function(passport) {
         passwordField : 'password',
         passReqToCallback : true // was told to do this buy the internet
     },
-    function(req, users, password, done) {
+    function(req, username, password, done) {
 
         console.log("inside local-signup Strategy");
  
 		// find a user whose username is the same as the forms username
 		// we are checking to see if the user trying to login already exists
-        connection.query("select count(*) from users where username = ?", username, function(err,rows){ 
+        connection.query("select * from users where username = ?", username, function(err,rows){
 			console.log(rows);
 			console.log("above row object");
 			if (err)
@@ -55,11 +55,11 @@ module.exports = function(passport) {
  
 				// if there is no user with that email
                 // create the username
-                var newUserMysql = new Object(); // again found this on the interwebs
-				
-				newUserMysql.username    = username;
-                newUserMysql.password = bcrypt.hashSync(password, bcrypt.genSaltSync()); // need to hash this
-	
+                var newUserMysql = {
+                    username: username,
+                    passhash: bcrypt.hashSync(password, bcrypt.genSaltSync())
+                };
+
 				connection.query("INSERT INTO users set ?", newUserMysql, function(err) {
 				    return done(err, newUserMysql);
 				});	
@@ -85,7 +85,7 @@ module.exports = function(passport) {
                 return done(null, false, {message : 'Username or password was incorrect.'});
             } 
 			// if the user is found but the password is wrong
-            if (!bcrypt.compareSync(password, rows[0].password))
+            if (!bcrypt.compareSync(password, rows[0].passhash))
                 return done(null, false, {message: 'Username or password was incorrect.'}); // create the loginMessage and save it to session as flashdata
 			
             // all is well, return successful user

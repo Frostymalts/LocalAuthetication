@@ -11,7 +11,7 @@ function login(req, res, next) {
 	passport.authenticate('local-login', function(err, user, info) {
 		console.log("****** Inside login route *******");
 		if (err) { return next(err); }
-		req.logIn(user, function(err)
+		req.login(user, function(err)
 		{
 			if (err) { return next(err); }
 			return res.redirect('/');
@@ -27,7 +27,7 @@ function signup(req, res, next) {
 
 	passport.authenticate('local-signup', function(err, user, info) {
 		if (err) { return next(err); }
-		req.signup(user, function(err)
+		req.login(user, function(err)
 		{
 			if (err) { return next(err); }
 			return res.redirect('/');
@@ -35,9 +35,14 @@ function signup(req, res, next) {
 	})(req, res, next);
 }
 
-module.exports.Router = function() {
+module.exports.PublicRouter = function() {
 	var router = express.Router();
 	router.post('/login', login);
 	router.post('/signup', signup);
+	return router;	
+}
+
+module.exports.Router = function() {
+	var router = express.Router();
 	return router;
 }

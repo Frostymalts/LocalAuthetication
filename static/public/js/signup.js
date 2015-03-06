@@ -19,7 +19,7 @@ $("#form").submit(function () {
 			url: '/api/signup',
 			type: 'post',
 			data: JSON.stringify(credentials),
-			//dataType: 'json',
+			contentType: 'application/json',
 			success: function() {
 				window.location.href = "/";
 			},

@@ -33,13 +33,15 @@ require('./config/passport')(passport); // pass passport for configuration
 
 // static handling ============================
 app.use(express.static(__dirname + "/static/public"));
+
+app.use('/api', userController.PublicRouter());
+
 app.use(function(req,res,next) {
 	console.log("INSIDE SESSION VALIDATION");
 	if(req.isAuthenticated()) {
 		return next();
 	} else {
-		if (req.url != __dirname+"/signup.html") // ========================================== is this a security issue?
-			res.redirect("/login.html");
+		res.redirect("/login.html");
 	}
 });
 
