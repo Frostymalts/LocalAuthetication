@@ -11,6 +11,10 @@ function login(req, res, next) {
 	passport.authenticate('local-login', function(err, user, info) {
 		console.log("****** Inside login route *******");
 		if (err) { return next(err); }
+		if (!user) {
+			return res.status(401).json(info);
+		}
+
 		req.login(user, function(err)
 		{
 			if (err) { return next(err); }
